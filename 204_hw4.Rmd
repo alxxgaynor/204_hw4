@@ -1,0 +1,79 @@
+---
+title: "Social Cost of Carbon"
+author: "Alex Gaynor & Brendon McGovern"
+subtitle: ESM 204 - Assignment 4
+output:
+  pdf_document: default
+  html_document: default
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      results = FALSE)
+
+# Setup:
+
+rm(list=ls())
+
+options(scipen=999) # Gives normal numbers, not scientific ones.
+
+gc() # Cleans ram.
+
+# Packages:
+
+packages=c("dplyr",
+           "tidyr",
+           "stringr",  
+           "ggplot2",
+           "stargazer",
+           "cowplot",
+           "janitor",
+           "kableExtra") 
+
+# Fancy way to load packages (if its installed, run it, otherwise install it):
+
+lapply(1:length(packages), 
+       function(x)
+         ifelse((require(packages[x],
+                         character.only=TRUE)==FALSE),
+                install.packages(packages[x]),
+                require(packages[x],
+                        character.only=TRUE)))
+         
+# Set directory (sets the directory where the script is saved to avoid complicated directory paths):
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) 
+
+getwd()
+```
+
+```{r}
+# Load data (useful if letters are in the data to not let R do funny stuff):
+
+gas_demand_data <- read.csv("HW3_data.csv", 
+                            stringsAsFactors = F)
+
+gas_demand_data <- read.csv("HW3_data.csv", 
+                            stringsAsFactors = F)
+
+gas_demand <- gas_demand_data %>% 
+  clean_names %>% 
+  rename("price" ="price_dollars", 
+         "q_low" = "q_low_gallons", 
+         "q_high" = "q_high_gallons")
+
+# Plot data:
+
+plot_1 <- ggplot(data=gas_demand, 
+                 aes(y=price)) +
+  geom_point(aes(x=q_low)) +
+  geom_point(aes(x=q_high)) +
+  theme_cowplot(16)
+
+# Estimate linear model (model has an implied intercept):
+```
+
+
+
