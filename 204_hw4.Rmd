@@ -3,8 +3,8 @@ title: "Social Cost of Carbon"
 author: "Alex Gaynor & Brendon McGovern"
 subtitle: ESM 204 - Assignment 4
 output:
-  pdf_document: default
-  html_document: default
+  # pdf_document: default
+  # html_document: default
 --- 
 
 ```{r setup, include=FALSE}
@@ -52,24 +52,22 @@ getwd()
 ```{r}
 # Load data (useful if letters are in the data to not let R do funny stuff):
 
-gas_demand_data <- read.csv("HW3_data.csv", 
+damages <- read.csv("damages.csv", 
                             stringsAsFactors = F)
 
-gas_demand_data <- read.csv("HW3_data.csv", 
+warming_import <- read.csv("warming.csv", 
                             stringsAsFactors = F)
 
-gas_demand <- gas_demand_data %>% 
+warming <- warming_import %>%
   clean_names %>% 
-  rename("price" ="price_dollars", 
-         "q_low" = "q_low_gallons", 
-         "q_high" = "q_high_gallons")
+  rename("base" ="warming_baseline", 
+         "pulse" = "warming_pulse")
 
 # Plot data:
 
-plot_1 <- ggplot(data=gas_demand, 
-                 aes(y=price)) +
-  geom_point(aes(x=q_low)) +
-  geom_point(aes(x=q_high)) +
+plot_1 <- ggplot(data=warming, 
+                 aes(y=base)) +
+  geom_line(aes(x=year)) +
   theme_cowplot(16)
 
 # Estimate linear model (model has an implied intercept):
