@@ -65,9 +65,16 @@ warming_data <- warming_import %>%
 
 # Plot data:
 quad_line <- function(x){
-  y <- (20000000000000*x^2) - 3000000000000*x
+  y <- I(20000000000000*x^2) - I(3000000000000*x)
   return(y)
 }
+
+
+wellfare_high <- function(x){
+  y <- (x/2204.62)*19.6
+  z <- ((a_high-(3+y))*(demand((3+y),model_demand_high))/2)
+  return(z)
+  }
 
 fit1 <- lm(damages ~ warming, 
                        data=damages)
@@ -85,19 +92,41 @@ quadratic = fit2$coefficient[3]*damages$warming^2 + fit2$coefficient[2]*damages$
 
 
 # damages_temp <- 
-  ggplot(data=damages, 
+  plot_1 <- ggplot(data=damages, 
                  aes(y=damages, x=warming)) +
   geom_point(aes(x=warming)) +
   theme_cowplot(16) +
   stat_smooth(aes(y = damages),
               method = "lm",
-              formula = y ~ 20000000000000*x^2-3000000000000*x, size = 1)
+              formula = y ~ I(20000000000000*x^2) - I(3000000000000*x),
+              size = 2,
+              color = "orange2")
+  
+  plot_2 <- ggplot(data=warming_data, 
+                 aes(y=quad_line(base), x=year)) +
+  theme_cowplot(16) +
+    stat_smooth(aes(y=quad_line(pulse)),
+                color = "orange2",
+                alpha = 0.8)
   
 
+plot_1
 
+plot_2
 
-
+# +
+#   stat_smooth(aes(y=quad_line(base)))
 # Estimate linear model (model has an implied intercept):
+
+ggplot(data=warming_data, 
+                 aes(y=quad_line(pulse), x=year)) +
+  theme_cowplot(16) +
+    stat_smooth(aes(y=quad_line(pulse)),
+                color = "orange2",
+                alpha = 0.1) +
+  stat_smooth(aes(y=quad_line(base)),
+                color = "blue2",
+                alpha = 0.01)
 ```
 
 plot_1 <- ggplot(data=warming, 
