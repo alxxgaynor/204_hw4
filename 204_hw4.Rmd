@@ -70,6 +70,12 @@ plot_1 <- ggplot(data=warming,
   geom_line(aes(x=year)) +
   theme_cowplot(16)
 
+damages_temp <- ggplot(data=damages, 
+                 aes(y=damages), y_min = -5000000000000, y_max= 50000000000000) +
+  geom_point(aes(x=warming)) +
+  theme_cowplot(16)
+
+
 # Estimate linear model (model has an implied intercept):
 ```
 
