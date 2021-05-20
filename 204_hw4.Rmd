@@ -58,26 +58,51 @@ damages <- read.csv("damages.csv",
 warming_import <- read.csv("warming.csv", 
                             stringsAsFactors = F)
 
-warming <- warming_import %>%
+warming_data <- warming_import %>%
   clean_names %>% 
   rename("base" ="warming_baseline", 
          "pulse" = "warming_pulse")
 
 # Plot data:
+quad_line <- function(x){
+  y <- (20000000000000*x^2) - 3000000000000*x
+  return(y)
+}
 
-plot_1 <- ggplot(data=warming, 
-                 aes(y=base)) +
-  geom_line(aes(x=year)) +
-  theme_cowplot(16)
+fit1 <- lm(damages ~ warming, 
+                       data=damages)
 
-damages_temp <- ggplot(data=damages, 
-                 aes(y=damages), y_min = -5000000000000, y_max= 50000000000000) +
+fit2<-lm(damages~poly(warming,2,raw=TRUE), 
+                       data=damages)
+
+quadratic = fit2$coefficient[3]*damages$warming^2 + fit2$coefficient[2]*damages$warming + fit2$coefficient[1]
+
+
+#Count value of sale estimation
+# quadratic = fit2$coefficient[3]*Year^2 + fit2$coefficient[2]*Year + fit2$coefficient[1]
+# quadratic
+                      
+
+
+# damages_temp <- 
+  ggplot(data=damages, 
+                 aes(y=damages, x=warming)) +
   geom_point(aes(x=warming)) +
-  theme_cowplot(16)
+  theme_cowplot(16) +
+  stat_smooth(aes(y = damages),
+              method = "lm",
+              formula = y ~ 20000000000000*x^2-3000000000000*x, size = 1)
+  
+
+
 
 
 # Estimate linear model (model has an implied intercept):
 ```
 
-
+plot_1 <- ggplot(data=warming, 
+                 aes(y=base)) +
+  geom_line(aes(x=year)) +
+  theme_cowplot(16) +
+  (quad_line(damages$warming))
 
