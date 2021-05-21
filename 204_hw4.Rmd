@@ -216,6 +216,8 @@ scc_price_per_discount_rate <- ggplot(data = scc_tibble, aes(x = x, y = y)) +
   stat_smooth(se = FALSE, color = "orange2")
 scc_price_per_discount_rate
 
+#4
+scc_function_3(0.022)
 ```
 
 `r 
