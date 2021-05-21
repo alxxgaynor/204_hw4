@@ -52,7 +52,7 @@ getwd()
 ```{r}
 # Load data (useful if letters are in the data to not let R do funny stuff):
 
-damages <- read.csv("damages.csv", 
+damages_data <- read.csv("damages.csv", 
                             stringsAsFactors = F)
 
 warming_import <- read.csv("warming.csv", 
@@ -70,17 +70,12 @@ quad_line <- function(x){
 }
 
 
-wellfare_high <- function(x){
-  y <- (x/2204.62)*19.6
-  z <- ((a_high-(3+y))*(demand((3+y),model_demand_high))/2)
-  return(z)
-  }
 
 fit1 <- lm(damages ~ warming, 
-                       data=damages)
+                       data=damages_data)
 
 fit2<-lm(damages~poly(warming,2,raw=TRUE), 
-                       data=damages)
+                       data=damages_data)
 
 quadratic = fit2$coefficient[3]*damages$warming^2 + fit2$coefficient[2]*damages$warming + fit2$coefficient[1]
 
@@ -124,9 +119,14 @@ ggplot(data=warming_data,
     stat_smooth(aes(y=quad_line(pulse)),
                 color = "orange2",
                 alpha = 0.1) +
-  stat_smooth(aes(y=quad_line(base)),
-                color = "blue2",
-                alpha = 0.01)
+  # stat_smooth(aes(y=quad_line(base)),
+  #               color = "blue2",
+  #               alpha = 0.01) +
+  stat_smooth(aes(y=quad_line(pulse) - quad_line(base)),
+                color = "green2",
+                alpha = 0.01) +
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
+
 ```
 
 plot_1 <- ggplot(data=warming, 
@@ -135,3 +135,74 @@ plot_1 <- ggplot(data=warming,
   theme_cowplot(16) +
   (quad_line(damages$warming))
 
+```{r}
+#making a damage function--do it with stored intercepts later
+damage_function <- function(x){
+  damage <- -3018856250104*x + 19589020155100*x^2
+  return(damage)
+}
+#creating new columns
+warming_scenarios <- warming_data %>% 
+  mutate(damage_no_pulse = damage_function(base)) %>% 
+  mutate(damage_with_pulse = damage_function(pulse)) %>% 
+  mutate(pulse_damages = damage_with_pulse - damage_no_pulse) %>% 
+  mutate(pulse_damages_per_ton = pulse_damages/35000000000)
+damage_no_pulse_graph <- ggplot(data = warming_scenarios, aes(x = year, y = damage_no_pulse)) + geom_point()
+damage_no_pulse_graph
+damage_with_pulse_graph <- ggplot(data = warming_scenarios, aes(x = year, y = damage_with_pulse)) + geom_point()
+damage_with_pulse_graph
+pulse_damages_graph <- ggplot(data = warming_scenarios, aes(x = year, y = pulse_damages)) + geom_point() +
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
+pulse_damages_graph
+pulse_damages_per_ton_graph <- ggplot(data = warming_scenarios, aes(x = year, y = pulse_damages_per_ton)) + geom_point()
+pulse_damages_per_ton_graph
+```
+
+```{r}
+#making a damage function--do it with stored intercepts later
+scc_function <- function(x){
+  scc_n <- warming_scenarios$pulse_damages_per_ton /
+    I((1 + x)^(warming_scenarios$x-1))
+  scc <- sum(scc_n)
+  return(scc)
+}
+
+SCC <- tibble(x = c(0,
+                              51,
+                              75,
+                              100,
+                              125,
+                              150),
+                        y <- (x/2204.62)*19.6,
+                        q <- ((a_high-(3+y))*(demand((3+y),
+                                                     model_demand_high))/2),
+                        z <- ((a_low-(3+y))*(demand((3+y),
+                                                    model_demand_low))/2)-(demand_alt(3+y)*y),
+                        v <- q + demand_alt(3+y)*y*pretax_perc_high,
+                        w <- z+demand_alt(3+y)*y*(1/pretax_perc_high),
+                        p <- producer_surplus(x)) %>% 
+  round(digits = 2)
+
+fit3<-lm(pulse_damages_per_ton~poly(x,2,raw=TRUE), 
+                       data=warming_scenarios)
+
+test <- function (x){
+  y = I(fit3$coefficient[3]*x^2) + I(fit3$coefficient[2]*x) + fit3$coefficient[1]
+  return(y)
+}
+
+test(40)
+
+scc_function_1 <- function(x,q){
+  scc_n <- I(fit3$coefficient[3]*q^2) + I(fit3$coefficient[2]*q) + fit3$coefficient[1]
+  scc_n <- warming_scenarios$pulse_damages_per_ton /
+    I((1 + x)^(warming_scenarios$x-1))
+  scc <- sum(scc_n)
+  return(scc)
+}
+
+
+scc_function_1(0.03,0:1000) 
+```
+
+`r 
