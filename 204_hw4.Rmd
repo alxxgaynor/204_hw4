@@ -69,25 +69,13 @@ quad_line <- function(x){
   return(y)
 }
 
-
-
-fit1 <- lm(damages ~ warming, 
-                       data=damages_data)
-
 fit2<-lm(damages~poly(warming,2,raw=TRUE), 
                        data=damages_data)
 
-quadratic = fit2$coefficient[3]*damages$warming^2 + fit2$coefficient[2]*damages$warming + fit2$coefficient[1]
+quadratic = fit2$coefficient[3]*damages_data$warming^2 + fit2$coefficient[2]*damages_data$warming + fit2$coefficient[1]
 
 
-#Count value of sale estimation
-# quadratic = fit2$coefficient[3]*Year^2 + fit2$coefficient[2]*Year + fit2$coefficient[1]
-# quadratic
-                      
-
-
-# damages_temp <- 
-  plot_1 <- ggplot(data=damages, 
+dollars_per_damages_plot <- ggplot(data=damages_data, 
                  aes(y=damages, x=warming)) +
   geom_point(aes(x=warming)) +
   theme_cowplot(16) +
@@ -96,36 +84,42 @@ quadratic = fit2$coefficient[3]*damages$warming^2 + fit2$coefficient[2]*damages$
               formula = y ~ I(20000000000000*x^2) - I(3000000000000*x),
               size = 2,
               color = "orange2")
+dollars_per_damages_plot
   
-  plot_2 <- ggplot(data=warming_data, 
+plot_2_1 <- ggplot(data=warming_data, 
                  aes(y=quad_line(base), x=year)) +
   theme_cowplot(16) +
-    stat_smooth(aes(y=quad_line(pulse)),
+    stat_smooth(aes(y=quad_line(base)),
                 color = "orange2",
                 alpha = 0.8)
-  
+plot_2_1
 
-plot_1
-
-plot_2
-
-# +
-#   stat_smooth(aes(y=quad_line(base)))
-# Estimate linear model (model has an implied intercept):
-
-ggplot(data=warming_data, 
+plot_2_2 <- ggplot(data=warming_data, 
                  aes(y=quad_line(pulse), x=year)) +
   theme_cowplot(16) +
     stat_smooth(aes(y=quad_line(pulse)),
                 color = "orange2",
-                alpha = 0.1) +
-  # stat_smooth(aes(y=quad_line(base)),
-  #               color = "blue2",
-  #               alpha = 0.01) +
+                alpha = 0.8)
+plot_2_2
+
+# Estimate linear model (model has an implied intercept):
+
+plot_2_3 <- ggplot(data=warming_data, 
+                 aes(y=quad_line(pulse), x=year)) +
+  theme_cowplot(16) +
   stat_smooth(aes(y=quad_line(pulse) - quad_line(base)),
-                color = "green2",
+                color = "orange2",
                 alpha = 0.01) +
   scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
+plot_2_3
+
+plot_2_4 <- ggplot(data=warming_data, 
+                 aes(x=year)) +
+  theme_cowplot(16) +
+  stat_smooth(aes(y=(quad_line(pulse) - quad_line(base))/35000000000,
+                color = "orange2"))
+plot_2_4
+
 
 ```
 
@@ -167,42 +161,61 @@ scc_function <- function(x){
   return(scc)
 }
 
-SCC <- tibble(x = c(0,
-                              51,
-                              75,
-                              100,
-                              125,
-                              150),
-                        y <- (x/2204.62)*19.6,
-                        q <- ((a_high-(3+y))*(demand((3+y),
-                                                     model_demand_high))/2),
-                        z <- ((a_low-(3+y))*(demand((3+y),
-                                                    model_demand_low))/2)-(demand_alt(3+y)*y),
-                        v <- q + demand_alt(3+y)*y*pretax_perc_high,
-                        w <- z+demand_alt(3+y)*y*(1/pretax_perc_high),
-                        p <- producer_surplus(x)) %>% 
-  round(digits = 2)
 
 fit3<-lm(pulse_damages_per_ton~poly(x,2,raw=TRUE), 
                        data=warming_scenarios)
 
-test <- function (x){
-  y = I(fit3$coefficient[3]*x^2) + I(fit3$coefficient[2]*x) + fit3$coefficient[1]
-  return(y)
-}
-
-test(40)
-
 scc_function_1 <- function(x,q){
-  scc_n <- I(fit3$coefficient[3]*q^2) + I(fit3$coefficient[2]*q) + fit3$coefficient[1]
-  scc_n <- warming_scenarios$pulse_damages_per_ton /
-    I((1 + x)^(warming_scenarios$x-1))
-  scc <- sum(scc_n)
+  dmg_per_ton <- I(fit3$coefficient[3]*q^2) + I(fit3$coefficient[2]*q) + fit3$coefficient[1]
+  scc_per_year <- dmg_per_ton /
+    I((1 + x)^(q))
+  scc <- sum(scc_per_year)
   return(scc)
 }
 
 
-scc_function_1(0.03,0:1000) 
+scc_function_2 <- function(x,k){
+  dmg_per_ton <- I(fit3$coefficient[3]*k^2) + I(fit3$coefficient[2]*k) + fit3$coefficient[1]
+  scc_per_year <- dmg_per_ton /
+    I((1 + x)^k)
+  scc <- sum(scc_per_year)
+  return(scc)
+}
+
+scc_function_3 <- function(x){
+  k <- (0:10000)
+  dmg_per_ton <- I(fit3$coefficient[3]*k^2) + I(fit3$coefficient[2]*k) + fit3$coefficient[1]
+  scc_per_year <- dmg_per_ton /
+    I((1 + x)^k)
+  scc <- sum(scc_per_year)
+  return(scc)
+}
+
+
+scc_function_3(0.03) 
+
+scc_tibble <- tibble(x = c(0.01,
+                    0.02,
+                    0.03,
+                    0.04,
+                    0.05,
+                    0.06,
+                    0.07),
+                    y = c(369.8745,
+                          126.2623,
+                          64.10156,
+                          39.59037,
+                          27.36961,
+                          20.34711,
+                          15.90986))
+  round(digits = 2)
+
+
+scc_price_per_discount_rate <- ggplot(data = scc_tibble, aes(x = x, y = y)) + 
+  geom_point() + 
+  stat_smooth(se = FALSE, color = "orange2")
+scc_price_per_discount_rate
+
 ```
 
 `r 
