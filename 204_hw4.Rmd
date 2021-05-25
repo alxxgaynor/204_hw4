@@ -83,42 +83,44 @@ dollars_per_damages_plot <- ggplot(data=damages_data,
               method = "lm",
               formula = y ~ I(20000000000000*x^2) - I(3000000000000*x),
               size = 2,
-              color = "orange2")
+              color = "orange2") + scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
 dollars_per_damages_plot
   
-plot_2_1 <- ggplot(data=warming_data, 
+#2.1 Damages overtime without the pulse
+baseline_damages_graph <- ggplot(data=warming_data, 
                  aes(y=quad_line(base), x=year)) +
   theme_cowplot(16) +
     stat_smooth(aes(y=quad_line(base)),
                 color = "orange2",
-                alpha = 0.8)
-plot_2_1
+                alpha = 0.8) + scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) + labs(x = "Year", y = "Total Damages (in dollars)", title = "Total damages overtime without the CO2 pulse")
+baseline_damages_graph
 
-plot_2_2 <- ggplot(data=warming_data, 
+# 2.2 Damages over time with the pulse
+pulse_damages_graph <- ggplot(data=warming_data, 
                  aes(y=quad_line(pulse), x=year)) +
   theme_cowplot(16) +
     stat_smooth(aes(y=quad_line(pulse)),
                 color = "orange2",
-                alpha = 0.8)
-plot_2_2
+                alpha = 0.8) + scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) + labs(x = "Year", y = "Total Damages (in dollars)", title = "Total damages overtime with the CO2 pulse")
+pulse_damages_graph
 
 # Estimate linear model (model has an implied intercept):
 
-plot_2_3 <- ggplot(data=warming_data, 
+#2.3 The difference in damages over time that arise from the pulse
+difference_damages_graph <- ggplot(data=warming_data, 
                  aes(y=quad_line(pulse), x=year)) +
   theme_cowplot(16) +
   stat_smooth(aes(y=quad_line(pulse) - quad_line(base)),
                 color = "orange2",
                 alpha = 0.01) +
-  scale_y_continuous(labels = function(x) format(x, scientific = TRUE))
-plot_2_3
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) + labs(x = "Year", y = "Total Damages (in dollars)", title = "Difference in damages over time that arise from pulse")
+difference_damages_graph
 
-plot_2_4 <- ggplot(data=warming_data, 
-                 aes(x=year)) +
-  theme_cowplot(16) +
-  stat_smooth(aes(y=(quad_line(pulse) - quad_line(base))/35000000000,
-                color = "orange2"))
-plot_2_4
+#2.4 The difference in damages over time from the pulse per ton of CO2
+difference_per_ton_graph <- ggplot(data=warming_data, 
+                 aes(x=year)) + theme_cowplot(16) + stat_smooth(aes(y=(quad_line(pulse) - quad_line(base))/35000000000),
+                color = "orange2", alpha = 0.01) + labs(x = "Year", y = "Damages per ton of CO2", title = "Difference in damages from pulse (per ton of CO2")
+difference_per_ton_graph
 
 
 ```
@@ -197,8 +199,6 @@ scc_function_3 <- function(x){
   return(scc)
 }
 
-scc_function_3(0.02)
-
 scc_tibble <- tibble(x = c(0.01,
                     0.02,
                     0.03,
@@ -218,12 +218,11 @@ scc_tibble <- tibble(x = c(0.01,
 
 scc_price_per_discount_rate <- ggplot(data = scc_tibble, aes(x = x, y = y)) + 
   geom_point() + 
-  geom_line(se = FALSE, color = "orange2")
+  geom_line(se = FALSE, color = "orange2") + labs(x = "Discount rate", y = "Social Cost of Carbon (in dollars)", title = "SCC Price per Discount Rate") + theme_cowplot(16)
+difference_per_ton_graph
 scc_price_per_discount_rate
 
 #4
-
-scc_function_3(0.021)
 scc_function_3(0.021) # P* 116.4574
 
 
@@ -239,6 +238,7 @@ scc_function_3(0.021) # P* 116.4574
 ```
 
 ```{r}
+#making a damage function--do it with stored intercepts later
 
 # get present values from each policy and then multiply it by the % chance that it occurs.
 
@@ -309,7 +309,7 @@ dollars_per_damages_plot
 ## a) Baseline
 
 ```{r}
-baseline_damages_graph
+# baseline_damages_graph
 ```
 
 ## a) Pulse
