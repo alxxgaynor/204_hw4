@@ -191,7 +191,7 @@ scc_function_3 <- function(x){
   return(scc)
 }
 
-
+scc_function_3(0.02)
 
 scc_tibble <- tibble(x = c(0.01,
                     0.02,
@@ -216,11 +216,10 @@ scc_price_per_discount_rate <- ggplot(data = scc_tibble, aes(x = x, y = y)) +
 scc_price_per_discount_rate
 
 #4
-scc_function_3(0.022)
+scc_function_3(0.021)
 ```
 
 ```{r}
-#making a damage function--do it with stored intercepts later
 
 # get present values from each policy and then multiply it by the % chance that it occurs.
 
