@@ -140,7 +140,11 @@ warming_scenarios <- warming_data %>%
   mutate(damage_no_pulse = damage_function(base)) %>% 
   mutate(damage_with_pulse = damage_function(pulse)) %>% 
   mutate(pulse_damages = damage_with_pulse - damage_no_pulse) %>% 
-  mutate(pulse_damages_per_ton = pulse_damages/35000000000)
+  mutate(pulse_damages_per_ton = pulse_damages/35000000000) %>% 
+  mutate(damages_no_pulse_higher = damage_function(base*1.5)) %>%
+  mutate(base_b = base)
+warming_scenarios$base_b[31:80] <- 1.29
+
 damage_no_pulse_graph <- ggplot(data = warming_scenarios, aes(x = year, y = damage_no_pulse)) + geom_point()
 damage_no_pulse_graph
 damage_with_pulse_graph <- ggplot(data = warming_scenarios, aes(x = year, y = damage_with_pulse)) + geom_point()
@@ -151,6 +155,8 @@ pulse_damages_graph
 pulse_damages_per_ton_graph <- ggplot(data = warming_scenarios, aes(x = year, y = pulse_damages_per_ton)) + geom_point()
 pulse_damages_per_ton_graph
 ```
+
+##3.In order to determine the future of CO2, we built a model based on the CO2 emissions over the 80 years. We then extended the 
 
 ```{r}
 #making a damage function--do it with stored intercepts later
@@ -212,23 +218,123 @@ scc_tibble <- tibble(x = c(0.01,
 
 scc_price_per_discount_rate <- ggplot(data = scc_tibble, aes(x = x, y = y)) + 
   geom_point() + 
-  stat_smooth(se = FALSE, color = "orange2")
+  geom_line(se = FALSE, color = "orange2")
 scc_price_per_discount_rate
 
 #4
+
 scc_function_3(0.021)
+scc_function_3(0.021) # P* 116.4574
+
+
+
+```
+```{r}
+
+# For Question 5...changes degrees warming from 
+#warming_scenarios <- warming_data %>%
+  #mutate(base_b = base)
+#warming_scenarios$base_b[31:80] <- 1.29
+
 ```
 
 ```{r}
 
 # get present values from each policy and then multiply it by the % chance that it occurs.
 
+# Policy A
 
+# baseline (probability 0.5)
+a_baseline_function <- function(x){
+  a_baseline_n <- warming_scenarios$damage_no_pulse /
+    I((1 + x)^(warming_scenarios$x))
+  npv_policy_a <- sum(a_baseline_n)
+  return(npv_policy_a)
+}
+# 1.5 times baseline (probability 0.5)
+a_higher_baseline_function <- function(x){
+  a_higher_baseline_n <- warming_scenarios$damages_no_pulse_higher /
+    I((1 + x)^(warming_scenarios$x))
+  npv_policy_a_higher <- sum(a_higher_baseline_n)
+  return(npv_policy_a_higher)
+}
 
+a_baseline_function(0.02)*0.5
+a_higher_baseline_function(0.02)*0.5
 
+policy_a <- a_baseline_function(0.02)*0.5 + a_higher_baseline_function(0.02)*0.5
+policy_a
 
+# Policy B
+
+#added new column to run the damage function through new base_b column which has (1.29 degree warming damages from 2051-2080)
+policy_b_scenarios <- warming_scenarios %>%
+  mutate(policy_b_damage_np = damage_function(base_b))
+
+b_baseline_function <- function(x){
+  b_baseline_n <- policy_b_scenarios$policy_b_damage_np/
+    I((1 + x)^(policy_b_scenarios$x))
+  npv_policy_b <- sum(b_baseline_n)
+  return(npv_policy_b)
+}
+
+# Expected PV of damages up to 2100 under Policy B:
+b_baseline_function(0.02)
+
+#policy A = $2,931,794,400,293,097
+#policy B = $709,823,683,886,657
+
+#Policy A - Policy B
+2931794400293097 - 709823683886657
+#Policy A - Policy B = $2,221,970,716,406,440. Under a risk neutral society you could subtract Policy A - Policy B and as long as the cost of implementing Policy B does not exceed the difference from subtracting the two policies then Policy B should be pursued and implemented. Policy B suggests that society implements full scale renewable technology and is no longer adding CO2 that warms the atmosphere by 2050. So, if society is risk averse, they would be willing to pay more for Policy B because the utility from the certainty of Policy B is higher than the expected utility from Policy A. 
+
+policy_a
+b_baseline_function(.02)
 
 ```
 
 
+### 1) Estimate a quadratic damage function relating the dollar value of damages to the change in global mean temperature
+
+## To determine the damage function, we plotted damage at each temperature in the data and then calculated the model that best fits.
+
+```{r}
+dollars_per_damages_plot
+```
+
+### 2) Estimate damage function to predict damages in each year under the baseline climate and the pulse scenario
+
+## We used warming data to map on the damages data we previously found.
+
+## a) Baseline
+
+```{r}
+baseline_damages_graph
+```
+
+## a) Pulse
+
+```{r}
+pulse_damages_graph
+```
+
+## a) Difference between baseline and pulse
+
+```{r}
+difference_damages_graph
+```
+
+## a) Difference per ton
+
+```{r}
+difference_per_ton_graph
+```
+
+### 3) Calculate and make a plot of the SCC (y-axis) against the discount rate (x-axis) for a reasonable range of discount rates.
+
+## We divided damage per ton of the initial pulse by the total amount of tons emitted by that pulse to get ther per ton damage function. In order to predict the total future of the damage we modeled the curve of the per ton damage and then calculated it from time 0 to time 10,000 although it did not noticibly change after 1,000 years. With this equation in hand, you can input a discount rate such as 0.2 and get the SCC based on the damage into the future discounted at that rate.
+
+```{r}
+scc_price_per_discount_rate
+```
 
