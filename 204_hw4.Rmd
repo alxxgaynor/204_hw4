@@ -159,7 +159,7 @@ pulse_damages_per_ton_graph
 ##3.In order to determine the future of CO2, we built a model based on the CO2 emissions over the 80 years. We then extended the 
 
 ```{r}
-#making a damage function--do it with stored intercepts later
+# making a damage function--do it with stored intercepts later
 scc_function <- function(x){
   scc_n <- warming_scenarios$pulse_damages_per_ton /
     I((1 + x)^(warming_scenarios$x-1))
