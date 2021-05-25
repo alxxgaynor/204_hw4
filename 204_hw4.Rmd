@@ -281,6 +281,13 @@ b_baseline_function(0.02)
 #policy A = $2,931,794,400,293,097
 #policy B = $709,823,683,886,657
 
+#Policy A - Policy B
+2931794400293097 - 709823683886657
+#Policy A - Policy B = $2,221,970,716,406,440. Under a risk neutral society you could subtract Policy A - Policy B and as long as the cost of implementing Policy B does not exceed the difference from subtracting the two policies then Policy B should be pursued and implemented. Policy B suggests that society implements full scale renewable technology and is no longer adding CO2 that warms the atmosphere by 2050. So, if society is risk averse, they would be willing to pay more for Policy B because the utility from the certainty of Policy B is higher than the expected utility from Policy A. 
+
+policy_a
+b_baseline_function(.02)
+
 ```
 
 
