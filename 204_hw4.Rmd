@@ -78,7 +78,7 @@ dollars_per_damages_plot <- ggplot(data=damages_data,
               formula = y ~ I(20000000000000*x^2) - I(3000000000000*x),
               size = 2,
               color = "orange2") + scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) +
-  labs(x = "Warming (degrees)", y = "Damages (in dollars)", title = "Damage per Degree of Warming")
+  labs(x = "Warming (degrees)", y = "Damages (in dollars)", title = "Damage per Degree of Warming") + xlim(0,10)
   
 #2.1 Damages overtime without the pulse
 baseline_damages_graph <- ggplot(data=warming_data, 
