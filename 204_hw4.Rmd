@@ -285,7 +285,7 @@ scc_price_per_discount_rate
 
 ### 4) Using ρ = 0.001, η = 2, and g = 0.01, what is the SCC? Locate this point on your graph from above
 
-### We used the given formula r = ρ + ηg to get an discount rate of 2.1% and an SCC of $116.46.
+### We used the given formula r = ρ + ηg to get a discount rate of 2.1% and an SCC of $116.46.
 ```{r}
 scc_price_per_discount_rate_4
 ```
@@ -299,7 +299,7 @@ scc_price_per_discount_rate_4
 
 ### 5.1 What is the expected present value of damages up to 2100 under Policy A?
 
-### We calculated the net present value of Policy A under the baseline scenario using the net preset value formula with a 2% discount rate. We did the same thing for the case where each year's temperature is multiplied by 1.5. Considering that each of these scenarios are 50% likely to happen in Policy A, we multiplied each by 0.5 and then added them together to get: $2,931,794,400,293,097
+### We calculated the net present value of Policy A under the baseline scenario using the net present value formula with a 2% discount rate. We did the same thing for the case where each year's temperature is multiplied by 1.5. Considering that each of these scenarios are 50% likely to happen in Policy A, we multiplied each by 0.5 and then added them together to get: $2,931,794,400,293,097
 
 ### 5.2 What is the expected present value of damages up to 2100 under Policy B?
 
@@ -311,5 +311,5 @@ scc_price_per_discount_rate_4
 
 ### 5.4 Qualitatively, how would your answer change if society were risk averse?
 
-### Under a risk neutral society you could subtract Policy A - Policy B and as long as the cost of implementing Policy B does not exceed the difference from subtracting the two policies then Policy B should be pursued and implemented. Policy B suggests that society implements costly interventions to achieve a neutral climate temperature by 2050, which in turn makes for a lower risk, or more certain outcome of lower damages. So, if society is risk averse, they would be willing to pay even more for Policy B because the utility from the certainty of Policy B is higher than the expected utility from Policy A. The exact shape of how risk averse society is will oinform how much more they might pay.
+### Under a risk neutral society, you could subtract Policy A - Policy B and as long as the cost of implementing Policy B does not exceed the difference from subtracting the two policies then Policy B should be pursued and implemented. Policy B suggests that society implements costly interventions to achieve a neutral climate temperature by 2050, which in turn makes for a lower risk, or more certain outcome of lower damages. So, if society is risk averse, they would be willing to pay even more for Policy B because the utility from the certainty of Policy B is higher than the expected utility from Policy A. The exact shape of how risk averse society is will inform how much more they might pay.
 
