@@ -276,7 +276,7 @@ difference_per_ton_graph
 
 ### 3) Calculate and make a plot of the SCC (y-axis) against the discount rate (x-axis) for a reasonable range of discount rates.
 
-### We divided damage per ton of the initial pulse by the total amount of tons emitted by that pulse to get ther per ton damage function. In order to predict the total future of the damage we modeled the curve of the per ton damage and then calculated it from time 0 to time 10,000 although it did not noticibly change after 1,000 years. With this equation in hand, you can input a discount rate such as 0.2 and get the SCC based on the damage into the future discounted at that rate.
+### We divided damage per ton of the initial pulse by the total amount of tons emitted by that pulse to get the per ton damage function. In order to predict the total future of the damage we modeled the curve of the per ton damage and then calculated it from time 0 to time 10,000 although it did not noticibly change after 1,000 years. With this equation in hand, you can input a discount rate such as 0.2 and get the SCC based on the damage into the future discounted at that rate.
 
 ```{r}
 scc_price_per_discount_rate
