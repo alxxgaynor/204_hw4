@@ -135,7 +135,6 @@ warming_scenarios$base_b[31:80] <- 1.29
 ```
 
 
-
 ```{r}
 # 3.In order to determine the future of CO2, we built a model based on the CO2 emissions over the 80 years. We then extended the 
 # making a damage function--do it with stored intercepts later
@@ -307,7 +306,7 @@ scc_price_per_discount_rate_4
 
 ### 5.3 Suppose undertaking Policy A costs zero and undertaking Policy B costs X. How large could X be for it to still make economic sense to pursue Policy B instead of Policy A?
 
-### We found that the difference between the NPV of Policy A and Policy B to be $2,221,970,716,406,440, and this is the largest amount that B could cost for it to make economic sense to still pursue Policy B.
+### We found that the difference between the NPV of Policy A and Policy B to be $2,221,970,716,406,440, and this is the largest amount that B could cost for it to make economic sense to still pursue Policy B. X ≤ E(xA) - E(xB) = $2,221,970,716,406,440
 
 ### 5.4 Qualitatively, how would your answer change if society were risk averse?
 
